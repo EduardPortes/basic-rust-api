@@ -1,7 +1,7 @@
-use sqlx::{Pool, MySql};
 use sqlx::mysql::MySqlPoolOptions;
+use sqlx::{MySql, Pool};
 
-pub async fn start_connection() -> Pool<MySql>{
+pub async fn start_connection() -> Pool<MySql> {
     let mysql_environment = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let pool = MySqlPoolOptions::new()
