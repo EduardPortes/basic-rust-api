@@ -24,13 +24,20 @@ pub async fn validate_token(
     req: ServiceRequest,
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, (Error, ServiceRequest)> {
-    match decode::<Claims>(
+    let mut validation = Validation::new(jsonwebtoken::Algorithm::HS256);
+    validation.set_required_spec_claims(&["exp", "sub", "iat"]);
+    validation.leeway = 60;
+    validation.validate_exp = true;
+
+    let token_result = decode::<Claims>(
         credentials.token(),
         &DecodingKey::from_secret(get_secret().as_ref()),
-        &Validation::default(),
-    ) {
-        Ok(token_access) => {
-            req.extensions_mut().insert(token_access.claims);
+        &validation,
+    );
+
+    match token_result {
+        Ok(token_data) => {
+            req.extensions_mut().insert(token_data.claims);
             Ok(req)
         }
         Err(_) => {

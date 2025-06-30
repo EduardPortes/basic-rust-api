@@ -1,6 +1,4 @@
-use actix_web::dev::ServiceRequest;
-use actix_web::{App, Error, HttpServer, web};
-use actix_web_httpauth::extractors::bearer::{BearerAuth, Config};
+use actix_web::{web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use sqlx::{MySql, Pool};
@@ -11,6 +9,7 @@ mod db;
 mod handlers;
 mod models;
 mod routes;
+mod services;
 mod utils;
 
 use db::sql_connection::start_connection;

@@ -1,4 +1,4 @@
-use chrono::{DateTime, Duration, Utc};
+use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -23,10 +23,5 @@ impl Claims {
             iat: iat.timestamp() as usize,
             exp: exp.timestamp() as usize,
         }
-    }
-
-    pub fn is_valid(&self) -> bool {
-        let current_time = chrono::Utc::now().timestamp() as usize;
-        current_time < self.exp
     }
 }

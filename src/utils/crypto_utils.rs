@@ -1,4 +1,4 @@
-use bcrypt::{DEFAULT_COST, hash, verify};
+use bcrypt::{hash, verify};
 
 pub fn encode(password: &str) -> Result<String, bcrypt::BcryptError> {
     hash(password, 10)
