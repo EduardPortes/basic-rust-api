@@ -3,6 +3,7 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use dotenv::dotenv;
 use sqlx::{MySql, Pool};
 use std::io::Result;
+use actix_web_prom::PrometheusMetricsBuilder;
 
 mod auth;
 mod db;
@@ -23,8 +24,15 @@ async fn main() -> Result<()> {
     dotenv().ok();
     let _pool = start_connection().await;
     let auth_middleware = HttpAuthentication::bearer(utils::token_utils::validate_token);
+
+    let prometheus = PrometheusMetricsBuilder::new("api")
+        .endpoint("/metrics")
+        .build()
+        .unwrap();
+    
     HttpServer::new(move || {
         App::new()
+            .wrap(prometheus.clone())
             .app_data(web::Data::new(AppState {
                 sql_client: _pool.clone(),
             }))
